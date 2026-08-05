@@ -11,6 +11,7 @@ use Pushword\Core\Entity\Page;
 use Pushword\Core\Service\LinkCollectorService;
 use Pushword\Core\Site\SiteRegistry;
 use Pushword\LinkImprover\AddedLinksRegistry;
+use Pushword\LinkImprover\InternalLinkSources;
 use Pushword\LinkImprover\LinkImprover;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -48,6 +49,13 @@ final class LinkImproverRenderTest extends KernelTestCase
         $site->setCustomProperty('link_improver_max_links', $maxLinks);
     }
 
+    /** @param list<string> $urls */
+    private function ignoreUrls(array $urls): void
+    {
+        self::getContainer()->get(SiteRegistry::class)->get(self::HOST)
+            ->setCustomProperty('link_improver_ignored_urls', $urls);
+    }
+
     private function createTarget(string $slug = 'linkimp-kiwano', string $name = "Kiwano Melano\nhorned melon", string $locale = 'en', string $publishedAt = '-1 hour'): Page
     {
         $target = new Page();
@@ -80,6 +88,11 @@ final class LinkImproverRenderTest extends KernelTestCase
 
     private function render(string $mainContent, string $slug = 'linkimp-context'): string
     {
+        // localhost.dev caches statically, so persisting a fixture renders it —
+        // and memoizes the keyword map as it stood then. A real request starts
+        // from a fresh map; so does every render here.
+        self::getContainer()->get(InternalLinkSources::class)->reset();
+
         $page = new Page();
         $page->host = self::HOST;
         $page->locale = 'en';
@@ -180,6 +193,23 @@ final class LinkImproverRenderTest extends KernelTestCase
         self::assertStringContainsString('<a href="/" data-auto-link>Zorglub Home</a>', $rendered);
         // The root carries no slug to register for excludeAlreadyLinked.
         self::assertFalse(self::getContainer()->get(LinkCollectorService::class)->isSlugRegistered(''));
+    }
+
+    public function testAnIgnoredUrlIsNeverATarget(): void
+    {
+        $this->enable();
+        $this->ignoreUrls(['/', '/linkimp-kiwano']);
+        $this->nameTheHomepage('Zorglub Home');
+        $this->createTarget();
+        $this->createTarget('linkimp-melon-d-or', "melon d'or");
+
+        $rendered = $this->render("Everything starts at the Zorglub Home, says Kiwano Melano to the melon d'or.");
+
+        // The homepage and the listed page keep their mention as plain text…
+        self::assertStringNotContainsString('href="/"', $rendered);
+        self::assertStringNotContainsString('href="/linkimp-kiwano"', $rendered);
+        // …while every other target still gets its link.
+        self::assertStringContainsString('<a href="/linkimp-melon-d-or" data-auto-link>melon d\'or</a>', $rendered);
     }
 
     public function testAWildcardNameMatchesItsVariants(): void
