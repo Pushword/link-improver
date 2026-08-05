@@ -1,0 +1,61 @@
+{
+  "name": "pushword/link-improver",
+  "type": "symfony-bundle",
+  "description": "Automatic internal linking for Pushword CMS: page names become in-content links at render time.",
+  "keywords": ["internal linking", "netlinking", "seo", "links", "cms", "pushword"],
+  "homepage": "https://pushword.piedweb.com/extension/link-improver",
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/Pushword/Pushword/issues",
+    "source": "https://github.com/Pushword/Pushword/tree/main/packages/link-improver",
+    "docs": "https://pushword.piedweb.com/extension/link-improver"
+  },
+  "funding": [
+    {
+      "type": "liberapay",
+      "url": "https://liberapay.com/RobinPiedWeb"
+    }
+  ],
+  "require": {
+    "piedweb/linksimprover": "^0.2.1",
+    "pushword/core": "*"
+  },
+  "suggest": {
+    "pushword/admin": "Manage pages, media and users from an EasyAdmin-based back-office.",
+    "pushword/admin-block-editor": "Rich block editor (EditorJS) for the admin.",
+    "pushword/advanced-main-image": "Choose the main image format per page, from hidden to full hero.",
+    "pushword/api": "Token-authenticated REST API mirroring the admin, OpenAPI-described.",
+    "pushword/conversation": "Add comments, a contact form or any user input to your website.",
+    "pushword/docs": "Pushword documentation, readable offline from vendor/.",
+    "pushword/flat": "Turn Pushword into a flat-file CMS: content as Markdown in Git.",
+    "pushword/newsletter": "Audiences, segmented campaigns and criteria-driven automations.",
+    "pushword/page-scanner": "Find dead links, 404s, redirects and TODO reminders.",
+    "pushword/page-update-notifier": "Get an email when a page is created or edited.",
+    "pushword/quiz": "Interactive client-side quizzes (QCM) and personality tests.",
+    "pushword/repurpose": "Turn a page into ready-to-post social carousels (PNG/PDF).",
+    "pushword/search": "SQLite-native full-text search via Loupe, zero infrastructure.",
+    "pushword/snippet": "Reusable content fragments and dev-registered Twig components.",
+    "pushword/static-generator": "Export the whole site as static files (GitHub Pages, Apache, FrankenPHP).",
+    "pushword/template-editor": "Edit Twig view files online from the admin.",
+    "pushword/version": "List, diff and restore previous revisions of your pages."
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "1.0.x-dev"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Pushword\\LinkImprover\\": "src"
+    }
+  },
+  "authors": [
+    {
+      "name": "Robin@PiedWeb",
+      "email": "contact@piedweb.com",
+      "homepage": "https://en.piedweb.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
